@@ -1,0 +1,45 @@
+import requests
+import json
+
+
+investor_details = {
+    "name": "Aditi Rana",
+    "email": "aditi1929.be21@chitkara.edu.in",
+    "rollNumber": 2110991929,
+    "phone": 8295610889
+}
+
+# investment account
+response = requests.post(
+    "https://customer-analytics-34146.my.salesforce-sites.com/services/apexrest/createAccount",
+    headers={"Content-Type": "application/json"},
+    data=json.dumps(investor_details)
+)
+
+if response.status_code == 200:
+    account_number = response.json()["accountNumber"]
+    print(f"Account created successfully. Account number: {account_number}")
+else:
+    print("Failed to create account")
+
+# Invest in Bajaj Finserv
+investment_details = {
+    "company": "Bajaj Finserv",
+    "currentPrice": 1577.80,  
+    "accountNumber": account_number,
+    "githubRepoLink": "https://github.com/aditirana1929"  
+}
+
+response = requests.post(
+    "https://customer-analytics-34146.my.salesforce-sites.com/services/apexrest/buyStocks",
+    headers={
+        "Content-Type": "application/json",
+        "bfhl-auth": str(investor_details["rollNumber"])
+    },
+    data=json.dumps(investment_details)
+)
+
+if response.status_code == 200:
+    print("Stocks purchased successfully")
+else:
+    print("Failed to purchase stocks")
